@@ -22,23 +22,36 @@ public class LinkedList {
         if(temp != null){
             if(prev.getPid()!= 0 && temp.getNext().getPid() !=0){
                 temp.setPid(0);
+            }else{
+                merge(temp,prev);
             }
             return temp;
         }else{return null;}
 
     }
 
+    public void merge(Segment node, Segment prev){
+        Segment temp = node;
+        if(node.getNext().getPid()==0){
+            node.getNext().setLength(node.getLength()+node.getNext().getLength());
+            node.getNext().setStart(node.getStart());
+            prev.setNext(node.getNext());
+        }
+        if(prev.getPid() == 0){
+            prev.setLength(prev.getNext().getLength()+prev.getLength());
+            prev.setNext(prev.getNext().getNext());
+        }
+    }
+
     public boolean firstFit(Segment node){
         Segment temp = this.head;
         Segment prev = null;
-        System.out.println("head" + head);
         boolean completed;
         while( temp.getPid() != 0 || node.getLength() > temp.getLength()){
             prev = temp;
             temp = temp.getNext();
             if(temp == null){ break; }
         }
-        System.out.println("temp"+temp);
 
         if (temp!= null){
             insert(prev,temp,node);
