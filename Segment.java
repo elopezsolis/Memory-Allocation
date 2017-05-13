@@ -24,9 +24,7 @@ public final class Segment {
     public Segment getNext() {
         return next;
     }
-    public void setPid(int pid) {
-        this.pid = pid;
-    }
+    public void setPid(int pid) { this.pid = pid; }
     public void setStart(int start) {
         this.start = start;
     }
