@@ -17,46 +17,54 @@ public class LinkedList {
         Segment prev = null;
         System.out.println("head" + head);
         boolean completed = false;
-            while( temp.getPid() != 0 || node.getLength() > temp.getLength()){ // lenght part is not right i think
-                prev = temp;
-                temp = temp.getNext();
-                if(temp == null)
-                    break;
-            }
+        while( temp.getPid() != 0 || node.getLength() > temp.getLength()){
+            prev = temp;
+            temp = temp.getNext();
+            if(temp == null){ break; }
+        }
         System.out.println("temp"+temp);
-            if(temp == head ){
-                node.setStart(0);
-                temp.setStart(node.getLength());
-                temp.setLength(temp.getLength()-node.getLength());
-                node.setNext(temp);
-                head = node;
-                completed = true;
-            }else{
-                node.setStart(temp.getStart());
-                temp.setStart(node.getStart() + node.getLength());
-                temp.setLength(temp.getLength()-temp.getStart());
-                prev.setNext(node);
-                node.setNext(temp);
-            }
+        if(temp == head ){
+            node.setStart(0);
+            temp.setStart(node.getLength());
+            temp.setLength(temp.getLength()-node.getLength());
+            node.setNext(temp);
+            head = node;
+            completed = true;
+        }else if (temp!= null){
+            node.setStart(temp.getStart());
+            temp.setStart(node.getStart() + node.getLength());
+            temp.setLength(temp.getLength()-node.getLength());
+            prev.setNext(node);
+            node.setNext(temp);
+            completed = true;
+        }else{ completed = false;}
+
         return completed;
     }
+
+    /**
+     * TODO: make job take care of instance where pid is 0
+     * @param node
+     * @param strategy
+     * @return
+     */
     public boolean push(Segment node , String strategy){
         boolean complete= false;
-
-        if(node.getLength() < this.size){
-            switch (strategy){
-                case("ff"):
+        if (node.getLength() < this.size) {
+            switch (strategy) {
+                case ("ff"):
                     complete = this.firstFit(node);
                     break;
-                default: complete = false;
+                default:
+                    complete = false;
             }
-        }
-        else {
+        } else {
             System.out.println("Not enough space");
             complete = false;
         }
-        if(complete)
-            this.size-=node.getLength();
+        if (complete)
+            this.size -= node.getLength();
+
         return complete;
     }
     public boolean isEmtpy(){
