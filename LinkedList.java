@@ -12,11 +12,27 @@ public class LinkedList {
         size = 100;
     }
 
+    public Segment deallocate(int pid){
+        Segment temp = head;
+        Segment prev = null;
+        while (temp != null && temp.getPid() != pid){
+            prev = temp;
+            temp = temp.getNext();
+        }
+        if(temp != null){
+            if(prev.getPid()!= 0 && temp.getNext().getPid() !=0){
+                temp.setPid(0);
+            }
+            return temp;
+        }else{return null;}
+
+    }
+
     public boolean firstFit(Segment node){
         Segment temp = this.head;
         Segment prev = null;
         System.out.println("head" + head);
-        boolean completed = false;
+        boolean completed;
         while( temp.getPid() != 0 || node.getLength() > temp.getLength()){
             prev = temp;
             temp = temp.getNext();
@@ -31,6 +47,13 @@ public class LinkedList {
 
         return completed;
     }
+
+    /**
+     * Inserts the job, node, into the linked list
+     * @param prev - the node's previous connection
+     * @param temp - the space in which the node will be inserted
+     * @param node -  the item to insert
+     */
     public void insert(Segment prev,Segment temp,Segment node){
         if(temp == head ){
             node.setStart(0);
