@@ -23,23 +23,28 @@ public class LinkedList {
             if(temp == null){ break; }
         }
         System.out.println("temp"+temp);
+
+        if (temp!= null){
+            insert(prev,temp,node);
+            completed = true;
+        }else{ completed = false;}
+
+        return completed;
+    }
+    public void insert(Segment prev,Segment temp,Segment node){
         if(temp == head ){
             node.setStart(0);
             temp.setStart(node.getLength());
             temp.setLength(temp.getLength()-node.getLength());
             node.setNext(temp);
             head = node;
-            completed = true;
-        }else if (temp!= null){
+        }else {
             node.setStart(temp.getStart());
             temp.setStart(node.getStart() + node.getLength());
-            temp.setLength(temp.getLength()-node.getLength());
+            temp.setLength(temp.getLength() - node.getLength());
             prev.setNext(node);
             node.setNext(temp);
-            completed = true;
-        }else{ completed = false;}
-
-        return completed;
+        }
     }
 
     /**
