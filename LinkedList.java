@@ -6,14 +6,15 @@ import java.util.ArrayList;
 public class LinkedList {
     int size;
     Segment head;
+    Segment lastPosition;
     public LinkedList(){
         Segment temp = new Segment(0,0,100,null);
-        head = temp; // Prevents head from being null.
+        this.head = temp; // Prevents head from being null.
         size = 100;
     }
 
     public Segment deallocate(int pid){
-        Segment temp = head;
+        Segment temp = this.head;
         Segment prev = null;
         while (temp != null && temp.getPid() != pid){
             prev = temp;
@@ -42,14 +43,27 @@ public class LinkedList {
             prev.setNext(prev.getNext().getNext());
         }
     }
-    
+
+    /**
+     * Next Fit keeps track of where was the last insertion and starts searching there.
+     * - What if it reaches the end of the list and there was space for that size of that node at the
+     * beginning fo the list ?
+     * @param node
+     * @param start
+     * @return
+     */
+    public boolean nextFit(Segment node,Segment start){
+        this.firstFit(node,start); return true;
+    }
     /**
      * Finds the correct spot to insert node and calls insert() to add the node into the list
+     * firstFit() also keeps track of the last place where the node was inserted by updating @var lastPosition. This is used for nextFit() but not for
+     * firstFit()
      * @param node - node to add into the list
      * @return - TRUE if it was added into the list, FALSE if there was not a spot for the node.
      */
-    public boolean firstFit(Segment node){
-        Segment temp = this.head;
+    public boolean firstFit(Segment node,Segment head){
+        Segment temp = head;
         Segment prev = null;
         boolean completed;
         while( temp.getPid() != 0 || node.getLength() > temp.getLength()){
@@ -101,7 +115,10 @@ public class LinkedList {
         if (node.getLength() < this.size) {
             switch (strategy) {
                 case ("ff"):
-                    complete = this.firstFit(node);
+                    complete = this.firstFit(node,this.head);
+                    break;
+                case("nf"):
+                    complete = this.nextFit(node,lastPosition);
                     break;
                 default:
                     complete = false;
@@ -120,7 +137,7 @@ public class LinkedList {
     }
 
     public String toString(){
-        Segment temp = head;
+        Segment temp = this.head;
         String str = "";
         while(temp != null){
             str += temp.toString() + " ";
