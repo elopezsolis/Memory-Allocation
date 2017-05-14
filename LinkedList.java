@@ -42,7 +42,12 @@ public class LinkedList {
             prev.setNext(prev.getNext().getNext());
         }
     }
-
+    
+    /**
+     * Finds the correct spot to insert node and calls insert() to add the node into the list
+     * @param node - node to add into the list
+     * @return - TRUE if it was added into the list, FALSE if there was not a spot for the node.
+     */
     public boolean firstFit(Segment node){
         Segment temp = this.head;
         Segment prev = null;
@@ -85,9 +90,11 @@ public class LinkedList {
 
     /**
      * TODO: make job take care of instance where pid is 0
-     * @param node
-     * @param strategy
-     * @return
+     * This method calls the proper algorithm specified to insert the node.
+     * Checks if the the node's length is bigger than the list's
+     * If the addition was completed then it subtracts the node's length from  the total size
+     * @param strategy - type of algorithm to follow
+     * @return - TRUE if the node was added, FALSE otherwise
      */
     public boolean push(Segment node , String strategy){
         boolean complete= false;
