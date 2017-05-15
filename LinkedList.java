@@ -1,18 +1,20 @@
-import java.util.ArrayList;
-
 /**
  * This class implements a Linked List of Processes to go into memory
  */
 public class LinkedList {
-    int size;
     Segment head;
     Segment lastPosition;
+    final int length = 100;
     public LinkedList(){
-        Segment temp = new Segment(0,0,100,null);
+        Segment temp = new Segment(0,0,length,null);
         this.head = temp; // Prevents head from being null.
-        size = 100;
     }
 
+    /**
+     * TODO: add check to see if the pid its a zero
+     * @param pid
+     * @return
+     */
     public Segment deallocate(int pid){
         Segment temp = this.head;
         Segment prev = null;
@@ -21,10 +23,25 @@ public class LinkedList {
             temp = temp.getNext();
         }
         if(temp != null){
-            if(prev.getPid()!= 0 && temp.getNext().getPid() !=0){
+            if(temp == head){
+                if(temp.getNext().getPid()==0) {
+                    System.out.println("head ");
+                    temp.getNext().setLength(temp.getLength() + temp.getNext().getLength());
+                    temp.getNext().setStart(temp.getStart());
+                    head = temp.getNext();
+                }else { temp.setPid(0); }
+            }else if(temp.getNext() == null){
+                if(prev.getPid()== 0) {
+                    prev.setLength(prev.getNext().getLength() + prev.getLength());
+                    prev.setNext(null);
+                }else{ temp.setPid(0); }
+                System.out.println("last");
+            }else if(prev.getPid()!= 0 && temp.getNext().getPid() !=0) {
                 temp.setPid(0);
+                System.out.println("middle");
             }else{
                 merge(temp,prev);
+                System.out.println("left or right is a hole");
             }
             return temp;
         }else{return null;}
@@ -79,7 +96,8 @@ public class LinkedList {
 
         return completed;
     }
-
+//    public boolean bestFit(Segment Node){
+//    }
     /**
      * Inserts the job, node, into the linked list
      * @param prev - the node's previous connection
@@ -94,11 +112,18 @@ public class LinkedList {
             node.setNext(temp);
             head = node;
         }else {
-            node.setStart(temp.getStart());
-            temp.setStart(node.getStart() + node.getLength());
-            temp.setLength(temp.getLength() - node.getLength());
-            prev.setNext(node);
-            node.setNext(temp);
+
+            if(node.getLength() != temp.getLength()){
+                node.setStart(temp.getStart());
+                temp.setStart(node.getStart() + node.getLength());
+                temp.setLength(temp.getLength() - node.getLength());
+                prev.setNext(node);
+                node.setNext(temp);
+            }else
+            {
+                temp.setPid(node.getPid());
+            }
+
         }
     }
 
@@ -112,30 +137,19 @@ public class LinkedList {
      */
     public boolean push(Segment node , String strategy){
         boolean complete= false;
-        if (node.getLength() < this.size) {
             switch (strategy) {
                 case ("ff"):
-                    complete = this.firstFit(node,this.head);
+                    complete = this.firstFit(node, this.head);
                     break;
-                case("nf"):
-                    complete = this.nextFit(node,lastPosition);
+                case ("nf"):
+                    complete = this.nextFit(node, lastPosition);
                     break;
                 default:
                     complete = false;
             }
-        } else {
-            System.out.println("Not enough space");
-            complete = false;
-        }
-        if (complete)
-            this.size -= node.getLength();
 
         return complete;
     }
-    public boolean isEmtpy(){
-        return this.size == 100;
-    }
-
     public String toString(){
         Segment temp = this.head;
         String str = "";
@@ -146,11 +160,4 @@ public class LinkedList {
         return str;
     }
 
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
 }
