@@ -11,7 +11,7 @@ public class LinkedList {
     }
 
     /**
-     * TODO: add check to see if the pid its a zero
+     * TODO: add check to see if the pid its a zero, right now it just tries to delete 0 by changing the pid to 0, which doesn't change anything.
      * @param pid
      * @return
      */
@@ -96,8 +96,25 @@ public class LinkedList {
 
         return completed;
     }
-//    public boolean bestFit(Segment Node){
-//    }
+    public boolean bestFit(Segment node){
+        Segment temp = head;
+        Segment bestFit = null;
+        Segment bestFitPrev = null;
+        Segment prev = null;
+        int low = this.length+1;
+        while(temp!= null){
+            if(temp.getLength() < low&& node.getLength()<= temp.getLength() && temp.getPid() == 0){
+                        bestFit = temp;
+                        bestFitPrev = prev;
+                        low = bestFit.getLength();
+            }
+            prev = temp;
+            temp = temp.getNext();
+        }
+        this.insert(bestFitPrev,bestFit,node);
+        return !(low == this.length);
+
+    }
     /**
      * Inserts the job, node, into the linked list
      * @param prev - the node's previous connection
@@ -143,6 +160,9 @@ public class LinkedList {
                     break;
                 case ("nf"):
                     complete = this.nextFit(node, lastPosition);
+                    break;
+                case ("bf"):
+                    complete = this.bestFit(node);
                     break;
                 default:
                     complete = false;
