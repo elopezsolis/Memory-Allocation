@@ -12,6 +12,12 @@ public final class Segment {
         this.length = length;
         this.next = next;
     }
+    public Segment(Job job){
+        this.pid = job.getPid();
+        this.start = 0;
+        this.length = job.getSize();
+        this.next = null;
+    }
     public int getPid() {
         return pid;
     }

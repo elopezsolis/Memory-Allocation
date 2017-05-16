@@ -96,6 +96,13 @@ public class LinkedList {
 
         return completed;
     }
+
+    /**
+     * Finds the smallest hole in memory where the process will fit.
+     *
+     * @param node - node to insert in the list
+     * @return TRUE if variable low was modified, FALSE otherwise.
+     */
     public boolean bestFit(Segment node){
         Segment temp = head;
         Segment bestFit = null;
@@ -103,7 +110,7 @@ public class LinkedList {
         Segment prev = null;
         int low = this.length+1;
         while(temp!= null){
-            if(temp.getLength() < low&& node.getLength()<= temp.getLength() && temp.getPid() == 0){
+            if(temp.getLength() < low && node.getLength()<= temp.getLength() && temp.getPid() == 0){
                         bestFit = temp;
                         bestFitPrev = prev;
                         low = bestFit.getLength();
@@ -113,7 +120,24 @@ public class LinkedList {
         }
         this.insert(bestFitPrev,bestFit,node);
         return !(low == this.length);
-
+    }
+    public boolean worseFit(Segment node){
+        Segment temp = head;
+        Segment worseFit = null;
+        Segment worseFitPrev = null;
+        Segment prev = null;
+        int high =0;
+        while(temp!= null){
+            if(temp.getLength() > high && node.getLength() >= temp.getLength() && temp.getPid() == 0){
+                worseFit = temp;
+                worseFitPrev = prev;
+                high = worseFit.getLength();
+            }
+            prev = temp;
+            temp = temp.getNext();
+        }
+        this.insert(worseFitPrev,worseFit,node);
+        return high!=0;
     }
     /**
      * Inserts the job, node, into the linked list
