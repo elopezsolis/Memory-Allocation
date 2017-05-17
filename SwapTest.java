@@ -2,47 +2,46 @@ import java.util.*;
 
 public class SwapTest{
     /**
-     * need to handle when job is not present in the hash map
-     * need to handle when job is already in list, this means that the jobs in the map don't get deleted, just copied?
-     * need to handle when the user enters wrong input
-     * signal user if job with the same pid is already in the jobs map, so map doesn't replace it
      * after deallocating, the job is available again from the jobs list?
      * @param args
      */
     public static void main(String[] args){
         HashMap<Integer,Job> jobs = new HashMap<>();
+        HashMap<Integer,Boolean> jobStatus = new HashMap<>(); //TRUE if is available, FALSE if its already in list
         LinkedList list = new LinkedList();
         Scanner in = new Scanner(System.in);
-        String command;
         String[] arr = {""};
         while(arr[0] != "exit"){
             System.out.print(">");
             arr = in.nextLine().split(" ");
-            command = arr[0];
             if(arr.length ==1){
-                switch(command) {
+                switch(arr[0]) {
                     case "jobs":
-                        System.out.println(jobs.toString());
+                        for(Job val: jobs.values())
+                            System.out.print(val.toString()+ " ");
+                        System.out.println("");
                         break;
                     case "list":
                         System.out.println(list.toString()); // fix the output of hash map
                         break;
                     default:
-                        System.out.println("Commnad does not exist");
+                        System.out.println("Command does not exist");
                         break;
                 }
             }else if(arr.length==2 || arr.length ==3) {
                 try {
                     int num = Integer.parseInt(arr[1]);
-                    switch (command) {
+                    switch (arr[0]) {
                         case "de":
                             list.deallocate(num);
                             break;
                         case "add":
                             try {
                                 int length = Integer.parseInt(arr[2]);
-                                if(!jobs.containsKey(num))
+                                if(!jobs.containsKey(num)) {
                                     jobs.put(num, new Job(num, length));
+                                    jobStatus.put(num, true);
+                                }
                                 else
                                     System.out.println("job already exist");
                             } catch (Exception ex) {
@@ -51,10 +50,15 @@ public class SwapTest{
                             break;
                         default:
                             Job temp = jobs.get(num);
+                            System.out.println(jobStatus.get(num));
                             if (temp == null)
                                 System.out.println("Job does not exist");
+                            else if(!jobStatus.get(num)){
+                                System.out.println("Job already in the list");
+                            }
                             else
-                                list.push(new Segment(jobs.get(num)), command);
+                                if(list.push(new Segment(jobs.get(num)), arr[0]))
+                                    jobStatus.put(num,false);
                     }
                 } catch (NumberFormatException ex) {
                     System.out.println("Second argument needs to be a number");
