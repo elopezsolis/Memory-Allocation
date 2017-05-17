@@ -33,7 +33,9 @@ public class SwapTest{
                     int num = Integer.parseInt(arr[1]);
                     switch (arr[0]) {
                         case "de":
-                            list.deallocate(num);
+                            if(list.deallocate(num) == null)
+                                System.out.println("Job not in the list");
+                            else { jobStatus.put(num,true);}
                             break;
                         case "add":
                             try {
