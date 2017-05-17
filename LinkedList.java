@@ -189,6 +189,7 @@ public class LinkedList {
                     complete = this.bestFit(node);
                     break;
                 default:
+                    System.out.println("commmand does not exist");
                     complete = false;
             }
 
