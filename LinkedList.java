@@ -8,6 +8,7 @@ public class LinkedList {
     public LinkedList(){
         Segment temp = new Segment(0,0,length,null);
         this.head = temp; // Prevents head from being null.
+        lastPosition = head;
     }
 
     /**
@@ -62,21 +63,32 @@ public class LinkedList {
     }
 
     /**
-     * Next Fit keeps track of where was the last insertion and starts searching there.
-     * - What if it reaches the end of the list and there was space for that size of that node at the
-     * beginning fo the list ?
-     * @param node
-     * @param start
+     * nextFit() uses firstFit() with differnt start and stop
+     * this helps keeps track of where was to start searching there.
+     * It uses stop in firstFit() to tell it when to stop searching the list. If it reaches the end, null, then it will
+     * restart at head and will go until the last place where there was an addition.
+     * @param node - Job to add to the list
+     * @param start - Where firstFit() will start searching for a space to add node.
      * @return
      */
     public boolean nextFit(Segment node,Segment start){
-        this.firstFit(node,start); return true;
+        if(this.firstFit(node,start,null)){
+            return true;
+        }else{
+            if(this.firstFit(node,this.head,lastPosition))
+                return true;
+            else return false;
+        }
     }
     /**
      * Finds the correct spot to insert node and calls insert() to add the node into the list
-     * firstFit() also keeps track of the last place where the node was inserted by updating @var lastPosition. This is used for nextFit() but not for
-     * firstFit()
+     * firstFit() also keeps track of the last place where the node was inserted by updating @var lastPosition.
+     * This is used for nextFit() but not for firstFit().
      * @param node - node to add into the list
+     * @param head - the node where firstFit will start searching for any spots to add node, it will always start at the
+     *             head in when calling "ff n" in command line.
+     * @param stop - the node where firstFit will stop searching for space to add node, used mainly by nextFit(),
+     *             its always null for firstFit().
      * @return - TRUE if it was added into the list, FALSE if there was not a spot for the node.
      */
     public boolean firstFit(Segment node,Segment head){
@@ -158,6 +170,7 @@ public class LinkedList {
                 node.setStart(temp.getStart());
                 temp.setStart(node.getStart() + node.getLength());
                 temp.setLength(temp.getLength() - node.getLength());
+                System.out.println(prev+ " " + node);
                 prev.setNext(node);
                 node.setNext(temp);
             }else
@@ -177,19 +190,20 @@ public class LinkedList {
      * @return - TRUE if the node was added, FALSE otherwise
      */
     public boolean push(Segment node , String strategy){
-        boolean complete= false;
+        boolean complete;
             switch (strategy) {
-                case ("ff"):
-                    complete = this.firstFit(node, this.head);
+                case("ff"): complete = this.firstFit(node, this.head, null);
                     break;
-                case ("nf"):
+                case("nf"):
+                    System.out.println("last" + lastPosition);
                     complete = this.nextFit(node, lastPosition);
                     break;
-                case ("bf"):
-                    complete = this.bestFit(node);
+                case("bf"): complete = this.bestFit(node);
+                    break;
+                case("wf"): complete = this.worseFit(node);
                     break;
                 default:
-                    System.out.println("commmand does not exist");
+                    System.out.println("command does not exist");
                     complete = false;
             }
 
