@@ -4,11 +4,13 @@
 public class LinkedList {
     Segment head;
     Segment lastPosition;
+    Segment prevTempNode;
     final int length = 100;
     public LinkedList(){
         Segment temp = new Segment(0,0,length,null);
         this.head = temp; // Prevents head from being null.
         lastPosition = head;
+        prevTempNode = null;
     }
 
     /**
@@ -26,7 +28,6 @@ public class LinkedList {
         if(temp != null){
             if(temp == head){
                 if(temp.getNext().getPid()==0) {
-                    System.out.println("head ");
                     temp.getNext().setLength(temp.getLength() + temp.getNext().getLength());
                     temp.getNext().setStart(temp.getStart());
                     head = temp.getNext();
@@ -36,13 +37,10 @@ public class LinkedList {
                     prev.setLength(prev.getNext().getLength() + prev.getLength());
                     prev.setNext(null);
                 }else{ temp.setPid(0); }
-                System.out.println("last");
             }else if(prev.getPid()!= 0 && temp.getNext().getPid() !=0) {
                 temp.setPid(0);
-                System.out.println("middle");
             }else{
                 merge(temp,prev);
-                System.out.println("left or right is a hole");
             }
             return temp;
         }else{return null;}
@@ -85,24 +83,26 @@ public class LinkedList {
      * firstFit() also keeps track of the last place where the node was inserted by updating @var lastPosition.
      * This is used for nextFit() but not for firstFit().
      * @param node - node to add into the list
-     * @param head - the node where firstFit will start searching for any spots to add node, it will always start at the
+     * @param start - the node where firstFit will start searching for any spots to add node, it will always start at the
      *             head in when calling "ff n" in command line.
      * @param stop - the node where firstFit will stop searching for space to add node, used mainly by nextFit(),
      *             its always null for firstFit().
      * @return - TRUE if it was added into the list, FALSE if there was not a spot for the node.
      */
-    public boolean firstFit(Segment node,Segment head){
-        Segment temp = head;
-        Segment prev = null;
+    public boolean firstFit(Segment node,Segment start,Segment stop){
+        Segment temp = start;
+        Segment prev = prevTempNode;
         boolean completed;
         while( temp.getPid() != 0 || node.getLength() > temp.getLength()){
             prev = temp;
             temp = temp.getNext();
-            if(temp == null){ break; }
+            if(temp == stop){ break; }
         }
 
-        if (temp!= null){
+        if (temp!= stop){
+            lastPosition = temp;
             insert(prev,temp,node);
+            prevTempNode = node;
             completed = true;
         }else{ completed = false;}
 
@@ -123,15 +123,18 @@ public class LinkedList {
         int low = this.length+1;
         while(temp!= null){
             if(temp.getLength() < low && node.getLength()<= temp.getLength() && temp.getPid() == 0){
-                        bestFit = temp;
-                        bestFitPrev = prev;
-                        low = bestFit.getLength();
+                bestFit = temp;
+                bestFitPrev = prev;
+                low = bestFit.getLength();
             }
             prev = temp;
             temp = temp.getNext();
         }
-        this.insert(bestFitPrev,bestFit,node);
-        return !(low == this.length);
+        if(bestFit != null){
+            this.insert(bestFitPrev,bestFit,node);
+            return true;
+        }else
+            return false;
     }
     public boolean worseFit(Segment node){
         Segment temp = head;
@@ -140,7 +143,7 @@ public class LinkedList {
         Segment prev = null;
         int high =0;
         while(temp!= null){
-            if(temp.getLength() > high && node.getLength() >= temp.getLength() && temp.getPid() == 0){
+            if(temp.getLength() > high && node.getLength() <= temp.getLength() && temp.getPid() == 0){
                 worseFit = temp;
                 worseFitPrev = prev;
                 high = worseFit.getLength();
@@ -148,8 +151,12 @@ public class LinkedList {
             prev = temp;
             temp = temp.getNext();
         }
-        this.insert(worseFitPrev,worseFit,node);
-        return high!=0;
+        if(worseFit != null){
+            this.insert(worseFitPrev,worseFit,node);
+            return true;
+        }else
+            return false;
+
     }
     /**
      * Inserts the job, node, into the linked list
@@ -158,26 +165,20 @@ public class LinkedList {
      * @param node -  the item to insert
      */
     public void insert(Segment prev,Segment temp,Segment node){
-        if(temp == head ){
+        if(node.getLength() == temp.getLength())
+            temp.setPid(node.getPid());
+        else if(temp == head ){
             node.setStart(0);
             temp.setStart(node.getLength());
             temp.setLength(temp.getLength()-node.getLength());
             node.setNext(temp);
             head = node;
         }else {
-
-            if(node.getLength() != temp.getLength()){
-                node.setStart(temp.getStart());
-                temp.setStart(node.getStart() + node.getLength());
-                temp.setLength(temp.getLength() - node.getLength());
-                System.out.println(prev+ " " + node);
-                prev.setNext(node);
-                node.setNext(temp);
-            }else
-            {
-                temp.setPid(node.getPid());
-            }
-
+            node.setStart(temp.getStart());
+            temp.setStart(node.getStart() + node.getLength());
+            temp.setLength(temp.getLength() - node.getLength());
+            prev.setNext(node);
+            node.setNext(temp);
         }
     }
 
@@ -194,9 +195,7 @@ public class LinkedList {
             switch (strategy) {
                 case("ff"): complete = this.firstFit(node, this.head, null);
                     break;
-                case("nf"):
-                    System.out.println("last" + lastPosition);
-                    complete = this.nextFit(node, lastPosition);
+                case("nf"):complete = this.nextFit(node, lastPosition);
                     break;
                 case("bf"): complete = this.bestFit(node);
                     break;
