@@ -14,9 +14,10 @@ public class LinkedList {
     }
 
     /**
-     * TODO: add check to see if the pid its a zero, right now it just tries to delete 0 by changing the pid to 0, which doesn't change anything.
-     * @param pid
-     * @return
+     *Deallocate the specified pid in the list. Calling method checks if the PID is 0
+     *
+     * @param pid the PID to delete from the list
+     * @return - the Segment that is deleting from the list, Null if the segment was not found
      */
     public Segment deallocate(int pid){
         Segment temp = this.head;
@@ -47,6 +48,11 @@ public class LinkedList {
 
     }
 
+    /**
+     * In charge of merging two empty processes if the pid on the right and/or the pid on the left is 0
+     * @param node - process with a pid of 0
+     * @param prev - previous node of the proces to merge.
+     */
     public void merge(Segment node, Segment prev){
         Segment temp = node;
         if(node.getNext().getPid()==0){
@@ -61,13 +67,13 @@ public class LinkedList {
     }
 
     /**
-     * nextFit() uses firstFit() with differnt start and stop
-     * this helps keeps track of where was to start searching there.
+     * nextFit() uses firstFit() with different start and stop
+     * this helps keeps track of where to start searching.
      * It uses stop in firstFit() to tell it when to stop searching the list. If it reaches the end, null, then it will
-     * restart at head and will go until the last place where there was an addition.
+     * restart at head and will go until the last place where there was an addition, stop.
      * @param node - Job to add to the list
      * @param start - Where firstFit() will start searching for a space to add node.
-     * @return
+     * @return - TRUE if it was added, FALSE otherwise
      */
     public boolean nextFit(Segment node,Segment start){
         if(this.firstFit(node,start,null)){
@@ -79,7 +85,7 @@ public class LinkedList {
         }
     }
     /**
-     * Finds the correct spot to insert node and calls insert() to add the node into the list
+     * Finds the the first spot to insert the node and calls insert() to add the node into the list
      * firstFit() also keeps track of the last place where the node was inserted by updating @var lastPosition.
      * This is used for nextFit() but not for firstFit().
      * @param node - node to add into the list
@@ -136,6 +142,7 @@ public class LinkedList {
         }else
             return false;
     }
+
     public boolean worseFit(Segment node){
         Segment temp = head;
         Segment worseFit = null;
@@ -159,7 +166,7 @@ public class LinkedList {
 
     }
     /**
-     * Inserts the job, node, into the linked list
+     * Inserts the job, node, into the linked list, Calling function makes sure temp it is not null
      * @param prev - the node's previous connection
      * @param temp - the space in which the node will be inserted
      * @param node -  the item to insert
@@ -183,7 +190,6 @@ public class LinkedList {
     }
 
     /**
-     * TODO: make job take care of instance where pid is 0
      * This method calls the proper algorithm specified to insert the node.
      * Checks if the the node's length is bigger than the list's
      * If the addition was completed then it subtracts the node's length from  the total size
