@@ -1,7 +1,7 @@
 /**
- * A job or process in this project will contain two things:
- * - pid
- * - size
+ * A job or process contains:
+ * - pid  : process id
+ * - size : job size
  */
 public final class Job {
     private final int pid;

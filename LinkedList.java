@@ -1,5 +1,6 @@
 /**
- * This class implements a Linked List of Processes to go into memory
+ * This class acts as a linked list that tracks free and used memory
+ * It simulates segments in memory for jobs to be stored in.
  */
 public class LinkedList {
     Segment head;
@@ -143,6 +144,12 @@ public class LinkedList {
             return false;
     }
 
+    /**
+     * Performs the worse fit algorithm to allocate space for the job in memory.
+     * Worse fit- finds the biggest whole in memory to insert job in memory
+     * @param node - node to insert into memory
+     * @return - True if allocation was successful, False otherwise.
+     */
     public boolean worseFit(Segment node){
         Segment temp = head;
         Segment worseFit = null;

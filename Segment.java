@@ -1,5 +1,8 @@
 /**
- * This class implements
+ * Segment
+ * This is used to track free and used memory.
+ * If the pid is 0, then its a hole in the linked list.
+ *
  */
 public final class Segment {
     private int pid;

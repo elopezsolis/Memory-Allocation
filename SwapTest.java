@@ -3,8 +3,12 @@ import java.util.*;
 
 public class SwapTest{
     /**
-     *
-     * @param args
+     * This program simulates allocating jobs in memory.
+     * It can allocate jobs using:
+     * - First Fit
+     * - Next Fit
+     * - Best Fit
+     * - Worse Fit
      */
     public static void main(String[] args){
         HashMap<Integer,Job> jobs = new HashMap<>();
